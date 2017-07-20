@@ -14,10 +14,10 @@
     },
     "require": {
         "psr/simple-cache": "~1.0",
-        "vainyl/core": "dev-master",
-        "vainyl/connection": "dev-master",
-        "vainyl/database": "dev-master",
-        "vainyl/redis": "dev-master"
+        "vainyl/core": "0.1.x-dev",
+        "vainyl/connection": "0.1.x-dev",
+        "vainyl/database": "0.1.x-dev",
+        "vainyl/redis": "0.1.x-dev"
     },
     "repositories": [
         {

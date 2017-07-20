@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Vainyl\CRedis\Factory;
 
 use Vainyl\Core\AbstractIdentifiable;
+use Vainyl\CRedis\CRedisDatabase;
 use Vainyl\Database\DatabaseInterface;
 use Vainyl\Database\Factory\DatabaseFactoryInterface;
 
