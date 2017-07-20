@@ -1,0 +1,6 @@
+services:
+  connection.factory.credis:
+    class: Vainyl\CRedis\Factory\CRedisConnectionFactory
+  database.factory.credis:
+    class: Vainyl\CRedis\Factory\CRedisDatabaseFactory
+    arguments: ['@connection.storage']
