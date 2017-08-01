@@ -15,6 +15,7 @@ namespace Vainyl\CRedis\Factory;
 use Vainyl\Connection\ConnectionInterface;
 use Vainyl\Connection\Factory\ConnectionFactoryInterface;
 use Vainyl\Core\AbstractIdentifiable;
+use Vainyl\CRedis\CRedisConnection;
 
 /**
  * Class CRedisConnectionFactory
@@ -28,15 +29,15 @@ class CRedisConnectionFactory extends AbstractIdentifiable implements Connection
      */
     public function createConnection(string $name, array $configData): ConnectionInterface
     {
-        return new PdoConnection(
+        return new CRedisConnection(
             $name,
-            $configData['engine'],
             $configData['host'],
             $configData['port'],
             $configData['database'],
             $configData['user'],
             $configData['password'],
-            []
+            $configData['algo'],
+            $configData['serializer']
         );
     }
 }
