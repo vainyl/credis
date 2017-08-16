@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Vainyl\CRedis\Factory;
 
+use Vainyl\Cache\CacheInterface;
+use Vainyl\Cache\Factory\CacheFactoryInterface;
 use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\CRedis\CRedisDatabase;
 use Vainyl\Database\DatabaseInterface;
@@ -22,7 +24,7 @@ use Vainyl\Database\Factory\DatabaseFactoryInterface;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class CRedisDatabaseFactory extends AbstractIdentifiable implements DatabaseFactoryInterface
+class CRedisDatabaseFactory extends AbstractIdentifiable implements DatabaseFactoryInterface, CacheFactoryInterface
 {
     private $connectionStorage;
 
@@ -38,6 +40,18 @@ class CRedisDatabaseFactory extends AbstractIdentifiable implements DatabaseFact
 
     /**
      * @inheritDoc
+     */
+    public function createCache(string $cacheName, string $connectionName, array $options = []): CacheInterface
+    {
+        return $this->createDatabase($cacheName, $connectionName, $options);
+    }
+
+    /**
+     * @param string $databaseName
+     * @param string $connectionName
+     * @param array  $options
+     *
+     * @return CRedisDatabase
      */
     public function createDatabase(
         string $databaseName,
