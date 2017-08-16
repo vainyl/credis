@@ -5,3 +5,4 @@ services:
   database.factory.credis:
     class: Vainyl\CRedis\Factory\CRedisDatabaseFactory
     arguments: ['@connection.storage']
+  cache.factory.credis: '@database.factory.credis'
