@@ -16,6 +16,7 @@ use Vainyl\Connection\ConnectionInterface;
 use Vainyl\Connection\Factory\ConnectionFactoryInterface;
 use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\CRedis\CRedisConnection;
+use Vainyl\Redis\Storage\RedisScriptStorageInterface;
 
 /**
  * Class CRedisConnectionFactory
@@ -24,6 +25,18 @@ use Vainyl\CRedis\CRedisConnection;
  */
 class CRedisConnectionFactory extends AbstractIdentifiable implements ConnectionFactoryInterface
 {
+    private $scriptStorage;
+
+    /**
+     * CRedisConnectionFactory constructor.
+     *
+     * @param RedisScriptStorageInterface $scriptStorage
+     */
+    public function __construct(RedisScriptStorageInterface $scriptStorage)
+    {
+        $this->scriptStorage = $scriptStorage;
+    }
+
     /**
      * @inheritDoc
      */
@@ -34,10 +47,10 @@ class CRedisConnectionFactory extends AbstractIdentifiable implements Connection
             $configData['host'],
             $configData['port'],
             $configData['database'],
-            $configData['user'],
             $configData['password'],
             $configData['algo'],
-            $configData['serializer']
+            $configData['serializer'],
+            $this->scriptStorage
         );
     }
 }

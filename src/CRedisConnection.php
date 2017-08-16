@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Vainyl\CRedis;
 
 use Vainyl\Connection\AbstractConnection;
+use Vainyl\Redis\RedisScriptInterface;
 
 /**
  * Class CRedisConnection
@@ -21,23 +22,6 @@ use Vainyl\Connection\AbstractConnection;
  */
 class CRedisConnection extends AbstractConnection
 {
-    const scripts = [
-        'zAddXXNX' => 'return redis.call(\'zAdd\', KEYS[1], ARGV[1], ARGV[2], ARGV[3])',
-        // 185a09d32f70bd6274c081aafe6a2141aee0687e
-        'zAddCond' => '
-                    local score = redis.call("zScore", KEYS[1], ARGV[3]);
-                    if score == false then
-                        return redis.call("zAdd", KEYS[1], "CH", ARGV[2], ARGV[3]);
-                    end
-                    if (ARGV[1] == "LT" and score > ARGV[2]) or (ARGV[1] == "GT" and score < ARGV[2]) then
-                        return redis.call("zAdd", KEYS[1], "XX", "CH", ARGV[2], ARGV[3]);
-                    end
-
-                    return 0;
-        '
-        // bb8049d9b393db5b35998e1ed05c0913bff0a683
-    ];
-
     private $host;
 
     private $port;
@@ -50,17 +34,19 @@ class CRedisConnection extends AbstractConnection
 
     private $serializer;
 
+    private $scripts;
+
     /**
      * PdoConnection constructor.
      *
-     * @param string $connectionName
-     * @param        string string
-     * @param string $host
-     * @param int    $port
-     * @param int    $database
-     * @param string $password
-     * @param string $algorithm
-     * @param bool   $serializer
+     * @param string                 $connectionName
+     * @param string                 $host
+     * @param int                    $port
+     * @param int                    $database
+     * @param string                 $password
+     * @param string                 $algorithm
+     * @param bool                   $serializer
+     * @param RedisScriptInterface[] $scripts
      */
     public function __construct(
         $connectionName,
@@ -69,7 +55,8 @@ class CRedisConnection extends AbstractConnection
         int $database,
         string $password,
         string $algorithm,
-        bool $serializer
+        bool $serializer,
+        \Traversable $scripts
     ) {
         $this->host = $host;
         $this->port = $port;
@@ -77,6 +64,7 @@ class CRedisConnection extends AbstractConnection
         $this->password = $password;
         $this->algorithm = $algorithm;
         $this->serializer = $serializer;
+        $this->scripts = $scripts;
         parent::__construct($connectionName);
     }
 
@@ -91,13 +79,13 @@ class CRedisConnection extends AbstractConnection
             $redis->auth($password);
         }
         if ($this->serializer) {
-            $redis->setOption(\Redis::OPT_SERIALIZER, $this->getSerializerValue());
+            $redis->setOption(\Redis::OPT_SERIALIZER, (string)$this->getSerializerValue());
         }
         $redis->select($this->database);
 
-        foreach (self::scripts as $script) {
-            if ([0] === $redis->script('exists', sha1($script))) {
-                $redis->script('load', $script);
+        foreach ($this->scripts as $script) {
+            if ([0] === $redis->script('exists', $script->getId())) {
+                $redis->script('load', $script->__toString());
             }
         }
 
