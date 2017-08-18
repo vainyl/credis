@@ -16,10 +16,10 @@
         "php": ">=7.1",
         "ext-redis": "*",
         "psr/simple-cache": "~1.0",
-        "vainyl/core": "dev-master",
-        "vainyl/connection": "dev-master",
-        "vainyl/database": "dev-master",
-        "vainyl/redis": "dev-master"
+        "vainyl/core": "0.2.x-dev",
+        "vainyl/connection": "0.2.x-dev",
+        "vainyl/database": "0.2.x-dev",
+        "vainyl/redis": "0.2.x-dev"
     },
     "repositories": [
         {
@@ -30,8 +30,8 @@
     "provide": {
         "psr/container": "1.0.0",
         "psr/simple-cache": "1.0.0",
-        "vain/cache": "dev-master",
-        "vain/database": "dev-master"
+        "vain/cache": "^0.2",
+        "vain/database": "^0.2"
     },
     "prefer-stable": true,
     "minimum-stability": "dev"
